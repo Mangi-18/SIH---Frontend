@@ -22,7 +22,7 @@ const GlobalStyles = () => (
             --button-bg: rgba(0,0,0,0.1);
         }
         body.light-mode {
-            --bg-start: #f4f7f6; --bg-mid: #ffffff; --bg-end: #dce3e1;
+            --bg-start: #a1c4fd; --bg-mid: #c2e9fb; --bg-end: #ffecd2;
             --glass-bg: rgba(255, 255, 255, 0.65); 
             --border-color: rgba(0, 0, 0, 0.12);
             --text-primary: #17202a;
@@ -137,7 +137,204 @@ const useDebounce = (value, delay) => {
     }, [value, delay]);
     return debouncedValue;
 };
-const AnimatedBackground = () => { /* ... same as before */ useEffect(() => {const canvas = document.getElementById('particle-canvas'); if (!canvas) return; const ctx = canvas.getContext('2d'); let particles = []; const resize = () => {canvas.width = window.innerWidth; canvas.height = window.innerHeight;}; const createParticles = () => {particles = []; let particleCount = Math.floor(canvas.width * canvas.height / 25000); for (let i = 0; i < particleCount; i++) {particles.push({x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: Math.random() * 0.4 - 0.2, vy: Math.random() * 0.4 - 0.2, radius: Math.random() * 2 + 1,});}}; const animate = () => {ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => {p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > canvas.width) p.vx = -p.vx; if (p.y < 0 || p.y > canvas.height) p.vy = -p.vy; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fillStyle = document.body.classList.contains('light-mode') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'; ctx.fill();}); requestAnimationFrame(animate);}; window.addEventListener('resize', resize); resize(); createParticles(); animate(); return () => window.removeEventListener('resize', resize);}, []); return (<div className="background-wrapper"><div className="gradient-bg" /><canvas id="particle-canvas" /></div>);};
+
+const AnimatedBackground = ({ theme }) => {
+    useEffect(() => {
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+
+        // --- Weather Simulation State ---
+        let particles = [];
+        let shootingStars = [];
+        let raindrops = [];
+        let stormState = { active: false, timer: 0, duration: 12000, intensity: 0 };
+
+        const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+
+        // --- Dark Mode Effects ---
+        const createStars = () => {
+            particles = [];
+            let starCount = Math.floor(canvas.width / 10);
+            for (let i = 0; i < starCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    opacity: Math.random() * 0.5 + 0.5,
+                    twinkleSpeed: Math.random() * 0.05
+                });
+            }
+        };
+        const createShootingStar = () => {
+             if (Math.random() < 0.02) { // Probability
+                shootingStars.push({
+                    x: Math.random() * canvas.width, y: 0,
+                    len: Math.random() * 80 + 50,
+                    speed: Math.random() * 8 + 6,
+                    opacity: 1,
+                });
+            }
+        };
+        const createSnow = () => {
+            let snowCount = Math.floor(canvas.width / 3);
+            for (let i = 0; i < snowCount; i++) {
+                raindrops.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: Math.random() * 1 + 0.5,
+                    radius: Math.random() * 2 + 1,
+                });
+            }
+        };
+
+        // --- Light Mode Effects ---
+        const createMotes = () => {
+             particles = [];
+             let moteCount = Math.floor(canvas.width / 25);
+             for(let i = 0; i < moteCount; i++){
+                 particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: Math.random() * 0.4 - 0.2,
+                    vy: Math.random() * 0.4 - 0.2,
+                    radius: Math.random() * 4 + 2,
+                 });
+             }
+        };
+        const createRain = (intensity) => {
+            raindrops = [];
+            let rainCount = Math.floor(canvas.width / 2) * intensity;
+            for(let i = 0; i < rainCount; i++){
+                 raindrops.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: Math.random() * 5 + 5,
+                    len: Math.random() * 15 + 10,
+                });
+            }
+        };
+
+        // --- Universal Animation Loop ---
+        const animate = (timestamp) => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (theme === 'dark') {
+                // Draw stars
+                particles.forEach(p => {
+                    p.opacity += Math.sin(timestamp * p.twinkleSpeed) * 0.05;
+                    p.opacity = Math.max(0.3, Math.min(1, p.opacity));
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    ctx.fill();
+                });
+                
+                // Draw and update shooting stars
+                createShootingStar();
+                shootingStars.forEach((s, index) => {
+                    s.x += s.speed; s.y += s.speed * 0.5; s.opacity -= 0.02;
+                    if (s.opacity <= 0) shootingStars.splice(index, 1);
+                    ctx.beginPath();
+                    ctx.moveTo(s.x, s.y);
+                    ctx.lineTo(s.x - s.len, s.y - s.len * 0.5);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+
+                // Draw and update snow
+                raindrops.forEach(flake => {
+                    flake.y += flake.speed;
+                    if (flake.y > canvas.height) { flake.x = Math.random() * canvas.width; flake.y = -5; }
+                    ctx.beginPath();
+                    ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.fill();
+                });
+                
+                // Lightning
+                if(Math.random() < 0.001){
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.fillRect(0,0, canvas.width, canvas.height);
+                }
+
+            } else { // Light Mode
+                 // Handle storm
+                if (!stormState.active && Math.random() < 0.001) {
+                    stormState.active = true;
+                    stormState.timer = Date.now();
+                }
+                if(stormState.active){
+                    const elapsed = Date.now() - stormState.timer;
+                    if(elapsed < stormState.duration){
+                        const progress = elapsed / stormState.duration;
+                        stormState.intensity = Math.sin(progress * Math.PI); // ease in and out
+                        ctx.fillStyle = `rgba(0,0,0,${stormState.intensity * 0.5})`;
+                        ctx.fillRect(0,0,canvas.width, canvas.height);
+                        createRain(stormState.intensity);
+                    } else {
+                        stormState.active = false;
+                        raindrops = [];
+                    }
+                }
+                
+                // Draw Motes
+                 particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if (p.x < 0 || p.x > canvas.width) p.vx = -p.vx;
+                    if (p.y < 0 || p.y > canvas.height) p.vy = -p.vy;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fill();
+                });
+
+                // Draw Rain
+                raindrops.forEach(drop => {
+                    drop.y += drop.speed;
+                    if (drop.y > canvas.height) { drop.y = -drop.len; drop.x = Math.random() * canvas.width; }
+                    ctx.beginPath();
+                    ctx.moveTo(drop.x, drop.y);
+                    ctx.lineTo(drop.x, drop.y + drop.len);
+                    ctx.strokeStyle = `rgba(255, 255, 255, 0.5)`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                });
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+        };
+        
+        // Initialize based on theme
+        window.addEventListener('resize', resize);
+        resize();
+        if (theme === 'dark') {
+            createStars();
+            createSnow();
+        } else {
+            createMotes();
+        }
+        animate();
+        
+        return () => {
+            window.removeEventListener('resize', resize);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [theme]);
+
+    return (
+        <div className="background-wrapper">
+            <div className="gradient-bg" />
+            <canvas id="particle-canvas" />
+        </div>
+    );
+};
+
 const Toasts = ({ toasts, setToasts }) => { /* ... same as before */ useEffect(() => {if (toasts.length > 0) {const timer = setTimeout(() => setToasts(ts => ts.slice(1)), 3000); return () => clearTimeout(timer);}}, [toasts, setToasts]); return (<div className="toast-container"><AnimatePresence>{toasts.map((toast) => (<motion.div key={toast.id} className={`toast ${toast.type}`} initial={{ opacity: 0, y: 50, scale: 0.3 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}>{toast.message}</motion.div>))}</AnimatePresence></div>);};
 const AnimatedCounter = ({ value }) => { const count = useMotionValue(0); const rounded = useTransform(count, latest => Math.round(latest)); useEffect(() => { const animation = motion.div.animate(count, value, { duration: 1.5, ease: "easeOut" }); return animation.stop; }, [value, count]); return <motion.p>{rounded}</motion.p>; };
 const REVIEW_TRUNCATE_LENGTH = 280;
@@ -245,7 +442,7 @@ export default function App() {
     return (
         <>
             <GlobalStyles />
-            <AnimatedBackground />
+            <AnimatedBackground theme={theme} />
             <Toasts toasts={toasts} setToasts={setToasts} />
             <div className="container">
                 <header className="app-header">
