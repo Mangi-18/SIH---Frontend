@@ -19,12 +19,16 @@ const GlobalStyles = () => (
             --text-primary: #f0f0f5; --text-secondary: #a0a0b0;
             --positive: #22c55e; --negative: #ef4444; --neutral: #facc15; --brand: #8e44ad;
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --button-bg: rgba(0,0,0,0.1);
         }
         body.light-mode {
-            --bg-start: #e0eafc; --bg-mid: #ffffff; --bg-end: #cfdef3;
-            --glass-bg: rgba(255, 255, 255, 0.5); --border-color: rgba(0, 0, 0, 0.1);
-            --text-primary: #2c3e50; --text-secondary: #7f8c8d;
+            --bg-start: #f4f7f6; --bg-mid: #ffffff; --bg-end: #dce3e1;
+            --glass-bg: rgba(255, 255, 255, 0.65); 
+            --border-color: rgba(0, 0, 0, 0.12);
+            --text-primary: #17202a;
+            --text-secondary: #5d6d7e;
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --button-bg: rgba(0,0,0,0.05);
         }
         body { background: var(--bg-start); color: var(--text-primary); font-family: 'Inter', sans-serif; margin: 0; transition: background 0.5s ease; }
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; }
@@ -46,11 +50,10 @@ const GlobalStyles = () => (
         .input-container { position: relative; }
         .input-wrapper { position: relative; display: flex; flex-direction: column; gap: 1rem; }
         .form-card input {
-            background: rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--button-bg); border: 1px solid var(--border-color); border-radius: 8px;
             padding: 0.75rem 1rem; color: var(--text-primary); font-size: 1rem; transition: all 0.3s ease;
             width: 100%; box-sizing: border-box; padding-right: 3rem;
         }
-        body.light-mode .form-card input { background: rgba(0,0,0,0.05); }
         .clear-btn {
             position: absolute; right: 12px; top: 13px; background: rgba(0,0,0,0.2); border-radius: 50%;
             width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
@@ -71,11 +74,12 @@ const GlobalStyles = () => (
         .suggestion-item { padding: 0.75rem 1rem; cursor: pointer; transition: background 0.2s ease; }
         .suggestion-item:not(:last-child) { border-bottom: 1px solid var(--border-color); }
         .suggestion-item:hover { background: color-mix(in srgb, var(--brand) 20%, transparent); }
+        body.light-mode .suggestion-item:hover { background: color-mix(in srgb, var(--brand) 10%, transparent); }
 
         .analysis-card { border-left-width: 5px; transform-style: preserve-3d; }
         .card-header-controls { display: flex; gap: 0.5rem; }
         .card-control-btn {
-            background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 30px; height: 30px;
+            background: var(--button-bg); border: none; border-radius: 50%; width: 30px; height: 30px;
             display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary);
             opacity: 0.6; transition: all 0.3s ease;
         }
@@ -100,18 +104,19 @@ const GlobalStyles = () => (
         footer{text-align: center; margin-top: 3rem; color: var(--text-secondary); font-size: 0.9rem;} footer a{color: var(--brand); text-decoration: none;} footer a:hover{text-decoration: underline;}
         .card-header{display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;} .card-header h3{margin: 0; color: var(--text-primary); font-size: 1.5rem;} .card-header p{margin: 0;}
         .stats-grid{display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-top: 1.5rem; text-align: center;}
-        .sentiment-box, .total-box{background: rgba(0,0,0,0.1); border-radius: 12px; padding: 1rem; transition: all 0.3s ease;} .sentiment-box p:first-child, .total-box p:first-child{font-size: 2rem; font-weight: 700; margin: 0;}
+        .sentiment-box, .total-box{background: var(--button-bg); border-radius: 12px; padding: 1rem; transition: all 0.3s ease;} .sentiment-box p:first-child, .total-box p:first-child{font-size: 2rem; font-weight: 700; margin: 0;}
         .sentiment-box p, .total-box p{margin: 0.2rem 0;} .total-box p { color: var(--text-primary); }
-        .expand-btn{background: rgba(0,0,0,0.1); border-radius: 8px; padding: 0.5rem 1rem; text-align: center; margin-top: 1.5rem; cursor: pointer; user-select: none; transition: background 0.2s ease;}
-        .expand-btn:hover{background: rgba(0,0,0,0.2);} .reviews-grid{display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);}
+        .expand-btn, .show-more-btn {background: var(--button-bg); }
+        .expand-btn:hover, .show-more-btn:hover {background: color-mix(in srgb, var(--button-bg) 10%, #000 10%); }
+        .reviews-grid{display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);}
         .review-column h4{margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; border-bottom: 2px solid; padding-bottom: 0.5rem;}
         .review-column .positive{border-color: var(--positive);} .review-column .negative{border-color: var(--negative);} .review-column .neutral{border-color: var(--neutral);}
-        .review-item{background: rgba(0,0,0,0.1); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-secondary); border-left: 3px solid; line-height: 1.5;}
+        .review-item{background: var(--button-bg); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-secondary); border-left: 3px solid; line-height: 1.5;}
         .review-item.positive{border-color: var(--positive);} .review-item.negative{border-color: var(--negative);} .review-item.neutral{border-color: var(--neutral);}
         .review-item .score{font-weight: 600; color: var(--text-primary);} .empty-column{color: var(--text-secondary); font-style: italic;}
         .read-more-link{background: none; border: none; color: var(--brand); cursor: pointer; padding: 0 0 0 5px; margin-left: 5px; font-weight: 600; font-size: 0.85rem; display: inline;}
-        .read-more-link:hover{text-decoration: underline;} .show-more-btn{width: 100%; background: rgba(0,0,0,0.1); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: 6px; padding: 0.5rem; cursor: pointer; margin-top: 1rem; transition: all 0.2s ease;}
-        .show-more-btn:hover{background: rgba(0,0,0,0.2); color: var(--text-primary);}
+        .read-more-link:hover{text-decoration: underline;} 
+        .expand-btn, .show-more-btn {border-radius: 8px; padding: 0.5rem 1rem; text-align: center; margin-top: 1.5rem; cursor: pointer; user-select: none; transition: background 0.2s ease; width: 100%; border: 1px solid var(--border-color); color: var(--text-secondary);}
         .skeleton-card{padding: 1.5rem;} .skeleton-line{height: 20px; border-radius: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;}
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         @media (max-width: 768px) { .reviews-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .app-header { flex-direction: column; gap: 1rem; } }
@@ -203,9 +208,14 @@ export default function App() {
 
     useEffect(() => { 
         document.body.className = theme === 'light' ? 'light-mode' : ''; 
-        setTimeout(() => setIsLoading(false), 1000); // Simulate loading
     }, [theme]);
     
+    useEffect(() => {
+        // This effect runs only once on mount to set initial loading state
+        const timer = setTimeout(() => setIsLoading(false), 1000); // Simulate loading
+        return () => clearTimeout(timer);
+    }, []);
+
     useEffect(() => {
         const fetchSuggestions = async () => {
             if (debouncedSearchTerm.length < 3 || debouncedSearchTerm.startsWith('http')) { setSuggestions([]); return; }
@@ -274,7 +284,7 @@ export default function App() {
                         : (<motion.div className="placeholder-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: "center", color: "var(--text-secondary)" }}>No analyses yet. Enter a location to get started!</motion.div>)}
                     </AnimatePresence>
                 </main>
-                <footer><p>Explore the code on <a href="https://github.com/Swarup-2003" target="_blank" rel="noopener noreferrer">GitHub</a>.</p></footer>
+                <footer><p>Explore the code on <a href="https://github.com/Mangi-18" target="_blank" rel="noopener noreferrer">GitHub</a>.</p></footer>
             </div>
         </>
     );
