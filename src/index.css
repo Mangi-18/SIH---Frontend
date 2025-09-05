@@ -1,9 +1,132 @@
-/* Tailwind base, components, utilities */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Gradient background for body */
+/* Gradient background */
 body {
-  @apply bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 font-sans;
+  margin: 0;
+  font-family: sans-serif;
+  background: linear-gradient(to bottom right, #a78bfa, #f472b6, #818cf8);
+  min-height: 100vh;
+}
+
+/* Container */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+header p {
+  color: rgba(255,255,255,0.8);
+  margin-top: 10px;
+}
+
+/* Form Card */
+.form-card {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  border-radius: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-card input[type="text"] {
+  flex-grow: 1;
+  padding: 12px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  margin-bottom: 10px;
+}
+.form-card input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+.form-card button {
+  padding: 12px 24px;
+  border-radius: 24px;
+  border: none;
+  font-weight: bold;
+  background-color: #ec4899;
+  color: white;
+  cursor: pointer;
+}
+.form-card button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+.form-card button:hover:not(:disabled) {
+  background-color: #db2777;
+}
+
+/* Analysis Card */
+.analysis-card {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  border-radius: 24px;
+  margin-bottom: 20px;
+  border-left-width: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Sentiment Score Box */
+.sentiment-box {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+  text-align: center;
+  margin: 5px;
+}
+.sentiment-box p {
+  margin: 4px 0;
+}
+
+/* Sentiment Colors */
+.positive { color: #22c55e; }
+.negative { color: #ef4444; }
+.neutral { color: #facc15; }
+.no_reviews { color: #9ca3af; }
+
+/* Expand/Collapse button */
+.expand-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #60a5fa;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 10px;
+}
+.expand-btn:hover {
+  color: #3b82f6;
+}
+
+/* Review list */
+.review-list {
+  margin-top: 10px;
+  padding-left: 20px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.review-list li {
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+/* Total reviews box */
+.total-box {
+  text-align: center;
+  padding: 8px;
 }
